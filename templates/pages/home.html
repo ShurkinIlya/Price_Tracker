@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}Главная — PriceTracker{% endblock %}
+
+{% block content %}
+<div class="card text-center">
+    <div style="display: flex; justify-content: flex-end;">
+        {% if not user.is_authenticated %}
+        <a href="{% url 'login' %}" class="btn btn-primary" style="padding: 8px 16px;">
+            <i class="fas fa-sign-in-alt"></i> Войти
+        </a>
+        {% endif %}
+    </div>
+
+    <h1 style="font-size: 3rem; margin-bottom: 1rem; background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+        <i class="fas fa-chart-line"></i> PriceTracker
+    </h1>
+    <p style="font-size: 1.2rem; color: var(--gray); margin-bottom: 2rem;">
+        Сравниваем цены на маркетплейсах и подсказываем, когда покупать выгоднее всего.
+    </p>
+
+    <form method="post" action="{% url 'product_search' %}" class="search-box" style="margin: 0 auto;">
+        {% csrf_token %}
+        <input type="text" name="product_name" class="search-input" placeholder="Например: iPhone 15, ноутбук, кроссовки" required>
+        <button class="btn btn-primary">
+            <i class="fas fa-search"></i> Найти
+        </button>
+    </form>
+</div>
+
+<div class="card">
+    <h2 style="text-align: center; margin-bottom: 2rem; color: var(--secondary);">
+        <i class="fas fa-star"></i> Почему это удобно?
+    </h2>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+        <div style="text-align: center; padding: 1.5rem;">
+            <div style="font-size: 3rem; color: var(--accent); margin-bottom: 1rem;">
+                <i class="fas fa-bolt"></i>
+            </div>
+            <h3 style="margin-bottom: 1rem;">Быстрый сбор</h3>
+            <p style="color: var(--gray);">Парсим Amazon, Wildberries, Ozon и собираем ключевые метрики.</p>
+        </div>
+
+        <div style="text-align: center; padding: 1.5rem;">
+            <div style="font-size: 3rem; color: var(--success); margin-bottom: 1rem;">
+                <i class="fas fa-bell"></i>
+            </div>
+            <h3 style="margin-bottom: 1rem;">Оповещения</h3>
+            <p style="color: var(--gray);">Подготовили заглушку для уведомлений, подключим Telegram-бота позже.</p>
+        </div>
+
+        <div style="text-align: center; padding: 1.5rem;">
+            <div style="font-size: 3rem; color: var(--warning); margin-bottom: 1rem;">
+                <i class="fas fa-chart-bar"></i>
+            </div>
+            <h3 style="margin-bottom: 1rem;">Рекомендация времени</h3>
+            <p style="color: var(--gray);">AI блок подскажет, стоит ли подождать и какой дисконт ожидаем.</p>
+        </div>
+    </div>
+</div>
+
+<div class="card" style="background: linear-gradient(135deg, var(--light), #f8f9fa);">
+    <h3 style="text-align: center; margin-bottom: 1.5rem; color: var(--primary);">
+        <i class="fas fa-history"></i> Недавние поиски
+    </h3>
+    {% if recent_queries %}
+    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center;">
+        {% for query in recent_queries %}
+        <a href="{% url 'search_results' %}?q={{ query.name }}&category={{ query.category }}" class="btn btn-outline" style="padding: 8px 14px;">
+            {{ query.name }}
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p style="text-align: center; color: var(--gray);">Еще нет сохраненных запросов.</p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h3 style="margin-bottom: 1rem; color: var(--secondary); text-align: center;">
+        <i class="fas fa-fire"></i> Лучшие предложения
+    </h3>
+    {% if recent_offers %}
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem;">
+        {% for offer in recent_offers %}
+        <div style="background: white; border-radius: 15px; padding: 1rem; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border-left: 4px solid var(--accent);">
+            <div style="font-weight: 700; margin-bottom: 0.5rem;">{{ offer.title }}</div>
+            <div style="color: var(--primary); font-size: 1.2rem; font-weight: 700;">{{ offer.price }} {{ offer.currency }}</div>
+            <div style="color: var(--gray); font-size: 0.9rem; margin: 0.5rem 0;">
+                {{ offer.get_marketplace_display }} · {{ offer.query.name }}
+            </div>
+            {% if offer.rating %}
+            <div style="color: var(--warning); font-size: 0.9rem;">
+                <i class="fas fa-star"></i> {{ offer.rating }}
+            </div>
+            {% endif %}
+            <div style="margin-top: 0.75rem;">
+                <a href="{{ offer.url }}" target="_blank" class="btn btn-primary" style="padding: 8px 12px;">
+                    Перейти
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p style="text-align: center; color: var(--gray);">Появятся после первых поисков.</p>
+    {% endif %}
+</div>
+{% endblock %}

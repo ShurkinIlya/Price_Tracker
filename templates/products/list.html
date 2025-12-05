@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}Предложения — PriceTracker{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+        <h1 style="color: var(--secondary);">
+            <i class="fas fa-shopping-bag"></i> Сравнение предложений
+        </h1>
+        <a href="{% url 'product_search' %}" class="btn btn-outline">
+            <i class="fas fa-arrow-left"></i> Новый поиск
+        </a>
+        <form method="post" action="{% url 'clear_history' %}" style="margin-left: auto;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary" style="padding: 8px 14px;">
+                <i class="fas fa-trash"></i> Очистить историю
+            </button>
+        </form>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.25rem;">
+        {% for offer in offers %}
+        <div style="width: 100%; box-sizing: border-box; background: white; border-radius: 16px; padding: 1.25rem; box-shadow: 0 6px 18px rgba(0,0,0,0.12); border: 1px solid #e6ecf5; display: grid; grid-template-columns: 140px 1fr; gap: 1rem; align-items: center; overflow: hidden;">
+            <div style="width: 140px; height: 140px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; display: flex; align-items: center; justify-content: center; padding: 10px;">
+                {% if offer.image_url %}
+                <img src="{{ offer.image_url }}" alt="{{ offer.title }}" style="width: 100%; height: 100%; object-fit: contain;">
+                {% else %}
+                <i class="fas fa-box-open" style="font-size: 2rem; color: var(--gray);"></i>
+                {% endif %}
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 1rem; padding-right: 4px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem;">
+                    <h3 style="color: var(--dark); flex: 1; margin: 0;">{{ offer.title }}</h3>
+                    <span style="background: var(--success); color: white; padding: 0.35rem 0.9rem; border-radius: 999px; font-size: 0.8rem; font-weight: 600; white-space: nowrap;">
+                        {{ offer.get_marketplace_display }}
+                    </span>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary); display: flex; gap: 0.35rem; align-items: center;">
+                        {{ offer.price }} {{ offer.currency }}
+                        {% if offer.trend == 'up' %}
+                        <span style="color: #ef4444; font-size: 1.2rem;">&#9650;</span>
+                        {% elif offer.trend == 'down' %}
+                        <span style="color: #22c55e; font-size: 1.2rem;">&#9660;</span>
+                        {% endif %}
+                    </div>
+                    {% if offer.trend != 'flat' %}
+                    <div style="font-size: 0.95rem; font-weight: 600; color: {% if offer.trend == 'up' %}#ef4444{% else %}#22c55e{% endif %};">
+                        {% if offer.trend == 'up' %}+{% else %}-{% endif %}{{ offer.diff_abs }} {{ offer.currency }}
+                    </div>
+                    {% endif %}
+                    {% if offer.rating %}
+                    <div style="color: var(--warning); font-weight: 600;">
+                        <i class="fas fa-star"></i> {{ offer.rating }}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div style="color: var(--gray); font-size: 0.9rem;">
+                    Запрос: "{{ offer.query.name }}"
+                </div>
+
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
+                    {% if offer.url %}
+                    <a href="{{ offer.url }}" class="btn btn-primary" style="flex: 1 1 140px; padding: 0.6rem 0.8rem; justify-content: center;" target="_blank">
+                        <i class="fas fa-eye"></i> Смотреть
+                    </a>
+                    {% endif %}
+                    <button class="btn btn-outline" style="padding: 0.6rem 0.8rem; margin-left: auto;" type="button">
+                        <i class="fas fa-bell"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if not offers %}
+    <div style="text-align: center; padding: 2rem; color: var(--gray);">
+        Пока нет предложений. Начните с <a href="{% url 'product_search' %}">поиска товара</a>.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

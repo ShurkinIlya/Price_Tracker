@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Товары - Price Tracker{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1 style="text-align: center; margin-bottom: 2rem; color: var(--secondary);">
+        <i class="fas fa-shopping-bag"></i> Отслеживаемые товары
+    </h1>
+
+    <div style="text-align: center; padding: 3rem;">
+        <div style="font-size: 4rem; color: var(--gray); margin-bottom: 1rem;">
+            <i class="fas fa-box-open"></i>
+        </div>
+        <h3 style="color: var(--gray); margin-bottom: 1rem;">Пока нет отслеживаемых товаров</h3>
+        <p style="color: var(--gray); margin-bottom: 2rem;">Добавьте первый товар для отслеживания цен</p>
+        <a href="/" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Добавить товар
+        </a>
+    </div>
+</div>
+{% endblock %}

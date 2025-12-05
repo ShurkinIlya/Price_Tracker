@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Регистрация — PriceTracker{% endblock %}
+
+{% block content %}
+<style>
+    .auth-input {
+        width: 100%;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+        padding: 12px 14px;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+    }
+    .auth-input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.12);
+    }
+    .auth-label {
+        color: var(--gray);
+        font-weight: 600;
+        display: block;
+        margin-bottom: 0.35rem;
+    }
+</style>
+
+<div style="display: flex; justify-content: center;">
+    <div class="card" style="max-width: 520px; width: 100%; padding: 2.5rem;">
+        <div style="text-align: center; margin-bottom: 1.5rem;">
+            <div style="font-size: 2.5rem; color: var(--accent);">
+                <i class="fas fa-user-plus"></i>
+            </div>
+            <h2 style="margin-top: 0.5rem; color: var(--secondary);">Создать аккаунт</h2>
+            <p style="color: var(--gray);">Начните отслеживать цены и получать рекомендации</p>
+        </div>
+
+        <form method="post" style="display: grid; gap: 1rem;">
+            {% csrf_token %}
+
+            {% for field in form %}
+            <div>
+                <label for="{{ field.id_for_label }}" class="auth-label">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                <div class="form-text" style="color: var(--gray);">{{ field.help_text }}</div>
+                {% endif %}
+                {% for error in field.errors %}
+                <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 12px;">
+                Создать аккаунт
+            </button>
+        </form>
+
+        <div style="text-align: center; margin-top: 1rem; color: var(--gray);">
+            Уже есть аккаунт? <a href="{% url 'login' %}">Войдите</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

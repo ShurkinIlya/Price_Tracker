@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}Результаты поиска - PriceTracker{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h1 style="color: var(--secondary); margin: 0;">
+            Результаты: "{{ search_query }}"
+        </h1>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+            <span style="color: var(--gray);">Найдено: {{ results_count }} предложений</span>
+            <a href="{% url 'search_results' %}?q={{ search_query }}&category={{ category|default_if_none:'' }}&refresh=1"
+               class="btn btn-outline" style="padding: 8px 14px;">
+                <i class="fas fa-sync-alt"></i> Обновить
+            </a>
+        </div>
+    </div>
+
+    {% if forecast and forecast.forecast_price %}
+    <div class="card" style="background: linear-gradient(135deg, #2563eb, #4f46e5); color: white; margin-bottom: 1rem;">
+        <h3 style="margin: 0 0 0.75rem 0; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fas fa-chart-line"></i> Прогноз цены
+        </h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; font-size: 1rem;">
+            <div>Текущая: <strong>{{ forecast.current_price }} {{ forecast.base_currency }}</strong></div>
+            <div>Прогноз: <strong>{{ forecast.forecast_price }} {{ forecast.base_currency }}</strong></div>
+            <div>Учтённые скидки: сезонная {{ forecast.applied_discounts.seasonal }}%, распродажи {{ forecast.applied_discounts.sale_event }}%</div>
+            <div>Тренд (7 дней): <strong>{{ forecast_trend }}</strong></div>
+        </div>
+        <p style="margin-top: 0.75rem; font-size: 0.95rem; opacity: 0.9;">
+            Прогноз строится на сглаженной истории, тренде последних точек и календарных распродажах. Низкая волатильность и больше наблюдений повышают достоверность.
+        </p>
+    </div>
+    <div class="card" style="background: rgba(79,70,229,0.08); border: 1px solid #e0e7ff; color: var(--dark); margin-bottom: 1.5rem;">
+        <h4 style="margin: 0 0 0.5rem 0; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fas fa-shield-alt"></i> Уверенность прогноза
+        </h4>
+        <div style="font-size: 1.1rem; font-weight: 700; color: var(--secondary);">
+            {{ forecast_confidence_pct }}%
+        </div>
+        <p style="margin-top: 0.25rem; color: var(--gray);">
+            При малом числе точек или высокой волатильности точность ниже. Обновляйте данные по мере появления новых цен.
+        </p>
+    </div>
+    {% endif %}
+
+    {% if used_demo %}
+    <div class="card" style="background: #fff7e6; border: 1px solid #f59e0b33; color: #92400e; margin-bottom: 1rem;">
+        <strong>Демо-данные:</strong> парсинг маркетплейсов не вернул результатов (вероятно, антибот или неподходящее название). Показаны примеры для наглядности.
+    </div>
+    {% endif %}
+
+    <div style="display: grid; gap: 1.5rem;">
+        {% for product in results %}
+        <div class="card" style="display: flex; gap: 1.5rem; align-items: start;">
+            <div style="width: 140px; height: 140px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; display: flex; align-items: center; justify-content: center; padding: 8px;">
+                {% if product.image_url %}
+                <img src="{{ product.image_url }}" alt="{{ product.title }}"
+                     style="width: 100%; height: 100%; object-fit: contain;">
+                {% else %}
+                <i class="fas fa-box-open" style="font-size: 2rem; color: var(--gray);"></i>
+                {% endif %}
+            </div>
+
+            <div style="flex: 1;">
+                <h3 style="margin: 0 0 0.5rem 0; color: var(--dark);">{{ product.title }}</h3>
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                    <span style="font-size: 1.5rem; font-weight: bold; color: var(--primary);">
+                        {{ product.price }} {{ product.currency }}
+                    </span>
+                    <span style="background: {% if product.marketplace == 'amazon' %}var(--warning){% elif product.marketplace == 'wildberries' %}var(--accent){% else %}var(--secondary){% endif %};
+                          color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">
+                        {{ product.get_marketplace_display|default:product.marketplace|upper }}
+                    </span>
+                    {% if product.rating %}
+                    <span style="color: var(--warning); font-weight: 600;">
+                        <i class="fas fa-star"></i> {{ product.rating }}
+                    </span>
+                    {% endif %}
+                </div>
+
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    {% if product.url %}
+                    <a href="{{ product.url }}" target="_blank" class="btn btn-primary" style="padding: 8px 16px;">
+                        <i class="fas fa-external-link-alt"></i> Перейти на маркетплейс
+                    </a>
+                    {% endif %}
+                    <button class="btn btn-outline" type="button">
+                        <i class="fas fa-bell"></i> Оповещение (заглушка)
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div style="text-align: center; padding: 3rem; color: var(--gray);">
+            <div style="font-size: 4rem; margin-bottom: 1rem;">
+                <i class="fas fa-search"></i>
+            </div>
+            <h3>Ничего не нашли</h3>
+            <p>Попробуйте уточнить название товара или изменить категорию.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

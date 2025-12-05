@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Главная - Price Tracker{% endblock %}
+
+{% block content %}
+<div class="card text-center">
+    <h1 style="font-size: 3rem; margin-bottom: 1rem; background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+        <i class="fas fa-chart-line"></i> Price Tracker
+    </h1>
+    <p style="font-size: 1.2rem; color: var(--gray); margin-bottom: 2rem;">
+        Умная система отслеживания цен и рекомендаций для покупок
+    </p>
+
+    <div class="search-box">
+        <input type="text" class="search-input" placeholder="🔍 Введите ссылку на товар или название...">
+        <button class="btn btn-primary">
+            <i class="fas fa-search"></i> Отслеживать
+        </button>
+    </div>
+</div>
+
+<div class="card">
+    <h2 style="text-align: center; margin-bottom: 2rem; color: var(--secondary);">
+        <i class="fas fa-star"></i> Почему выбирают нас?
+    </h2>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+        <div style="text-align: center; padding: 1.5rem;">
+            <div style="font-size: 3rem; color: var(--accent); margin-bottom: 1rem;">
+                <i class="fas fa-bolt"></i>
+            </div>
+            <h3 style="margin-bottom: 1rem;">Умный анализ</h3>
+            <p style="color: var(--gray);">Анализируем погоду, сезонность, праздники и курсы валют</p>
+        </div>
+
+        <div style="text-align: center; padding: 1.5rem;">
+            <div style="font-size: 3rem; color: var(--success); margin-bottom: 1rem;">
+                <i class="fas fa-bell"></i>
+            </div>
+            <h3 style="margin-bottom: 1rem;">Своевременные уведомления</h3>
+            <p style="color: var(--gray);">Получайте алерты в лучший момент для покупки</p>
+        </div>
+
+        <div style="text-align: center; padding: 1.5rem;">
+            <div style="font-size: 3rem; color: var(--warning); margin-bottom: 1rem;">
+                <i class="fas fa-chart-bar"></i>
+            </div>
+            <h3 style="margin-bottom: 1rem;">Детальная аналитика</h3>
+            <p style="color: var(--gray);">Графики цен и рекомендации на основе данных</p>
+        </div>
+    </div>
+</div>
+
+<div style="text-align: center; margin-top: 2rem;">
+    <a href="/products/" class="btn btn-primary">
+        <i class="fas fa-rocket"></i> Начать отслеживание
+    </a>
+</div>
+{% endblock %}

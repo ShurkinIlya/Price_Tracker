@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Поиск товаров — PriceTracker{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1 style="text-align: center; color: var(--secondary); margin-bottom: 2rem;">
+        <i class="fas fa-search"></i> Найдите лучший оффер
+    </h1>
+
+    <form method="post" action="{% url 'product_search' %}" style="max-width: 700px; margin: 0 auto;">
+        {% csrf_token %}
+        <div class="search-box" style="max-width: 100%;">
+            <input type="text" name="product_name" class="search-input"
+                   placeholder="Например: iPhone 15, ноутбук, кроссовки..."
+                   required style="font-size: 1.1rem;">
+            <button type="submit" class="btn btn-primary" style="padding: 15px 30px;">
+                <i class="fas fa-rocket"></i> Искать
+            </button>
+        </div>
+    </form>
+
+    <div style="text-align: center; margin-top: 3rem;">
+        <h3 style="color: var(--primary); margin-bottom: 1rem;">Что будет дальше?</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+            <div style="text-align: center; padding: 1.5rem;">
+                <div style="font-size: 3rem; color: var(--accent); margin-bottom: 1rem;">
+                    <i class="fas fa-search-dollar"></i>
+                </div>
+                <h4>HTML-парсинг</h4>
+                <p style="color: var(--gray);">Снимаем цены и рейтинги с Amazon, Wildberries, Ozon.</p>
+            </div>
+            <div style="text-align: center; padding: 1.5rem;">
+                <div style="font-size: 3rem; color: var(--success); margin-bottom: 1rem;">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h4>Рекомендация сезона</h4>
+                <p style="color: var(--gray);">Покажем, стоит ли подождать и какой дисконт ожидается.</p>
+            </div>
+            <div style="text-align: center; padding: 1.5rem;">
+                <div style="font-size: 3rem; color: var(--warning); margin-bottom: 1rem;">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <h4>Оповещение</h4>
+                <p style="color: var(--gray);">Пока заглушка — позже подключим Telegram-бот.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

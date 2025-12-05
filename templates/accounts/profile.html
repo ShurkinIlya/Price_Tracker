@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Профиль - Price Tracker{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h1 style="color: var(--secondary);">
+            <i class="fas fa-user-circle"></i> Ваш профиль
+        </h1>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem;">
+        <div>
+            <div style="background: white; border-radius: 15px; padding: 1.5rem; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <div style="font-size: 4rem; color: var(--primary); margin-bottom: 1rem;">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <h3 style="color: var(--dark);">{{ user.username }}</h3>
+                <p style="color: var(--gray);">{{ user.email }}</p>
+                <div style="margin-top: 1rem;">
+                    <span style="background: var(--success); color: white; padding: 0.3rem 1rem; border-radius: 20px; font-size: 0.8rem;">
+                        Активен
+                    </span>
+                </div>
+            </div>
+
+            <div style="margin-top: 1rem;">
+                <a href="{% url 'logout' %}" class="btn btn-outline"
+                    style="width: 100%; justify-content: center;">
+                    <i class="fas fa-sign-out-alt"></i> Выйти
+                </a>
+                <form method="post" action="{% url 'clear_history' %}" style="margin-top: 0.5rem;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
+                        <i class="fas fa-trash"></i> Очистить историю
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div>
+            <div style="background: white; border-radius: 15px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <h3 style="color: var(--secondary); margin-bottom: 1rem;">
+                    <i class="fas fa-chart-line"></i> Статистика
+                </h3>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+                    <div style="text-align: center; padding: 1rem; background: var(--light); border-radius: 10px;">
+                        <div style="font-size: 2rem; color: var(--primary); font-weight: bold;">{{ tracked_count }}</div>
+                        <div style="color: var(--gray); font-size: 0.9rem;">Отслеживаемых товаров</div>
+                    </div>
+                    <div style="text-align: center; padding: 1rem; background: var(--light); border-radius: 10px;">
+                        <div style="font-size: 2rem; color: var(--success); font-weight: bold;">{{ alerts_count }}</div>
+                        <div style="color: var(--gray); font-size: 0.9rem;">Активных уведомлений</div>
+                    </div>
+                    <div style="text-align: center; padding: 1rem; background: var(--light); border-radius: 10px;">
+                        <div style="font-size: 2rem; color: var(--accent); font-weight: bold;">{{ history_count }}</div>
+                        <div style="color: var(--gray); font-size: 0.9rem;">История цен</div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: white; border-radius: 15px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <h3 style="color: var(--secondary); margin-bottom: 1rem;">
+                    <i class="fas fa-cog"></i> Настройки
+                </h3>
+                <div style="display: grid; gap: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: var(--light); border-radius: 8px;">
+                        <div>
+                            <strong>Уведомления на email</strong>
+                            <div style="color: var(--gray); font-size: 0.9rem;">Получать оповещения о падении цены</div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: var(--light); border-radius: 8px;">
+                        <div>
+                            <strong>Telegram уведомления</strong>
+                            <div style="color: var(--gray); font-size: 0.9rem;">Подключим позже (заглушка)</div>
+                        </div>
+                        <button class="btn btn-primary" style="padding: 0.5rem 1rem;" type="button">
+                            Подключить
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 24px;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 24px;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 16px;
+        width: 16px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+
+    input:checked + .slider {
+        background-color: var(--primary);
+    }
+
+    input:checked + .slider:before {
+        transform: translateX(26px);
+    }
+</style>
+{% endblock %}
